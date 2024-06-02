@@ -11,10 +11,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Product, Category, Feature, ProductFeature, Comment, Image, Order
 from django.http import Http404
 from .serializers import ProductSerialiser,UserSerialiser, CategorySerialiser, FeatureSerialiser, ProductFeatureSerialiser, CommentSerialiser, ImageSerialiser, OrderSerialiser
-
-
+from .pagination import ProductPagination
 
 # Create your views here.
+class ProductPaginationView(APIView):
+    pagination_class = ProductPagination
+
+    def get(self, request):
+        products = Product.objects.all()
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(products, request)
+        serializer = ProductSerialiser(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    
+
 class ProductFilterView(APIView):
     def get(self, request):
         name = request.query_params.get('name', None)
