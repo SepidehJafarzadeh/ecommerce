@@ -11,8 +11,22 @@ class Order(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.customer_name
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        subject = 'Your order has been received'
+        message = f'Dear {self.customer_name},\n\nThank you for your order. We have received your order and will begin processing it shortly.\n\nOrder Details:\nItems: {self.items}\nTotal Amount: ${self.total}\n.'
+        from_email = ''
+        to_email = [self.customer_email]
+
+        send_mail(
+            subject,
+            message,
+            from_email,
+            to_email,
+            fail_silently=True,
+        )
+
 
 
 class Feature(models.Model):
