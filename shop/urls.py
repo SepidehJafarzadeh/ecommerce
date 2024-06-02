@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, RegisterView , GoogleAuthView, GoogleAuthCallbackView,OrderView,ProductView,ProductFeatureView,CategoryView,FeatureView,CommentView,ImageView,UserView
+from .views import LoginView, RegisterView , GoogleAuthView, GoogleAuthCallbackView,OrderView,ProductView,ProductFeatureView,CategoryView,FeatureView,CommentView,ImageView,UserView, ProductFilterView
 
 app_name = 'app'
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path("image/<int:pk>/", ImageView.as_view(), name='image'),
     path("user/<int:pk>/", UserView.as_view(), name='user'),
     path('order/<int:pk>/', OrderView.as_view(), name='order'),
+    path('products/', ProductFilterView.as_view(), name='product-filter'),
 ]

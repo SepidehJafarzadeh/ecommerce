@@ -15,6 +15,29 @@ from .serializers import ProductSerialiser,UserSerialiser, CategorySerialiser, F
 
 
 # Create your views here.
+class ProductFilterView(APIView):
+    def get(self, request):
+        name = request.query_params.get('name', None)
+        title = request.query_params.get('title', None)
+
+        products = Product.objects.all()
+
+        try:
+            if name:
+                products = products.filter(name__icontains=name)
+
+            if title:
+                category = Category.objects.filter(title__icontains=title).first()
+                if category:
+                    products = products.filter(category=category)
+
+            serializer = ProductSerialiser(products, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 class RegisterView(APIView):
     def post(self, request):
         try:
